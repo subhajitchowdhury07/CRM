@@ -97,7 +97,7 @@ const routes = [
   // { path: '/customer', name: 'Products', elem },
   { path: '/customers/addCustomer', name: 'Add Customer', element: addCustomer },
   { path: '/customers/listCustomer', name: 'List', element: listCustomer },
-  { path: '/customers/group', name: 'Group', element: groupCustomer },
+  { path: '/customers/groupCustomer', name: 'Group', element: groupCustomer },
   // { path: '/Car/AddCar', name: 'Add Car', element: AddCar },
 ]
 

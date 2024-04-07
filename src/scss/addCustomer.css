@@ -84,86 +84,10 @@
   .success-popup-content button:hover {
     background-color: #1467ac; /* Darker green color on hover */
   }
-  /* Modal background overlay */
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* Modal content */
-.modal {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  z-index: 9999;
-}
-
-/* Modal header */
-.modal-header {
-  padding: 10px 15px;
-  border-bottom: 1px solid #ccc;
-}
-
-.modal-header h5.modal-title {
-  margin: 0;
-}
-
-.modal-header .close {
-  margin-top: -10px;
-}
-
-/* Modal body */
-.modal-body {
-  padding: 15px;
-}
-
-/* Modal footer */
-.modal-footer {
-  padding: 10px 15px;
-  border-top: 1px solid #ccc;
-  text-align: right;
-}
-
-/* Button style */
-.btn {
-  cursor: pointer;
-  border-radius: 3px;
-  padding: 5px 10px;
-  margin-right: 5px;
-}
-
-.btn-secondary {
-  background-color: #ccc;
-  color: #333;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: #fff;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  color: #fff;
-}
-
-/* Close button style */
-.close {
-  font-size: 20px;
-  color: #333;
-  opacity: 0.5;
-  transition: opacity 0.3s;
-}
-
-.close:hover {
-  opacity: 1;
+ .table-img img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
 }

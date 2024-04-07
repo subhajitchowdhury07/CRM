@@ -1,22 +1,193 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../../../scss/style.css';
+
+const EditCustomerModal = ({ showEditModal, setShowEditModal, selectedCustomer, onEditSuccess }) => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    mobile: '',
+    address: '',
+    customerType: '',
+    status: ''
+  });
+
+  useEffect(() => {
+    if (selectedCustomer) {
+      setFormData({
+        firstName: selectedCustomer.first_name || '',
+        lastName: selectedCustomer.last_name || '',
+        email: selectedCustomer.email || '',
+        mobile: selectedCustomer.mobile || '',
+        address: selectedCustomer.address || '',
+        customerType: selectedCustomer.customer_type || '',
+        status: selectedCustomer.status || ''
+      });
+    }
+  }, [selectedCustomer]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(`http://localhost:8087/customers/${selectedCustomer.id}`, formData);
+      console.log('Customer updated:', response.data);
+      onEditSuccess(response.data); // Update state with the updated customer data
+      setShowEditModal(false);
+    } catch (error) {
+      console.error('Error updating customer:', error);
+    }
+  };
+
+  return (
+    <div className={`modal fade ${showEditModal ? 'show' : ''}`} id="customerEditModal" tabIndex="-1" role="dialog" aria-hidden={!showEditModal}>
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Edit Customer</h5>
+            <button type="button" className="close" onClick={() => setShowEditModal(false)} aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="firstName">First Name</label>
+                <input type="text" className="form-control" id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="lastName">Last Name</label>
+                <input type="text" className="form-control" id="lastName" name="lastName" value={formData.lastName} onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input type="email" className="form-control" id="email" name="email" value={formData.email} onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="mobile">Mobile</label>
+                <input type="text" className="form-control" id="mobile" name="mobile" value={formData.mobile} onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="address">Address</label>
+                <input type="text" className="form-control" id="address" name="address" value={formData.address} onChange={handleChange} />
+              </div>
+              <div className="form-group">
+                <label htmlFor="customerType">Customer Type</label>
+                <select className="form-control" id="customerType" name="customerType" value={formData.customerType} onChange={handleChange}>
+                  <option value="">Select Type</option>
+                  <option value="Regular">Regular</option>
+                  <option value="Vendor">Vendor</option>
+                  <option value="VIP">VIP</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label htmlFor="status">Status</label>
+                <select className="form-control" id="status" name="status" value={formData.status} onChange={handleChange}>
+                  <option value="">Select Status</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+              <button type="submit" className="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const DeleteCustomerModal = ({ showDeleteModal, setShowDeleteModal, handleDelete, selectedCustomer }) => {
+  const handleConfirmDelete = async () => {
+    if (!selectedCustomer) {
+      console.error('No customer selected for deletion');
+      return;
+    }
+    try {
+      await handleDelete(selectedCustomer);
+      setShowDeleteModal(false);
+    } catch (error) {
+      console.error('Error deleting customer:', error);
+    }
+  };
+
+  return (
+    <div className={`modal fade ${showDeleteModal ? 'show' : ''}`} id="customerDeleteModal" tabIndex="-1" role="dialog" aria-hidden={!showDeleteModal}>
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Delete Customer</h5>
+            <button type="button" className="close" onClick={() => setShowDeleteModal(false)} aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <p>Are you sure you want to delete this customer?</p>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+            <button type="button" className="btn btn-danger" onClick={handleConfirmDelete}>Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const CustomerList = () => {
   const [customers, setCustomers] = useState([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   useEffect(() => {
-    // Fetch customer data from the database
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:8087/customers/listCustomer');
-        setCustomers(response.data); // Assuming response.data is an array of customer objects
+        setCustomers(response.data);
       } catch (error) {
         console.error('Error fetching customer data:', error);
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array ensures the effect runs only once after the component mounts
+  }, []);
+
+  const handleEdit = (customer) => {
+    setSelectedCustomer(customer);
+    setShowEditModal(true);
+  };
+
+  const handleDelete = async (customer) => {
+    console.log('Selected Customer for deletion:', customer);
+    try {
+      await axios.delete(`http://localhost:8087/customers/${customer.id}`);
+      setShowDeleteModal(false);
+  
+      try {
+        const response = await axios.get('http://localhost:8087/customers/listCustomer');
+        setCustomers(response.data);
+      } catch (error) {
+        console.error('Error fetching updated customer data:', error);
+      }
+    } catch (error) {
+      console.error('Error deleting customer:', error);
+    }
+  };
+
+  const handleEditSuccess = (updatedCustomer) => {
+    const updatedCustomers = customers.map(customer => {
+      if (customer.id === updatedCustomer.id) {
+        return updatedCustomer;
+      }
+      return customer;
+    });
+    setCustomers(updatedCustomers);
+  };
 
   return (
     <div className="content-wrapper">
@@ -49,7 +220,7 @@ const CustomerList = () => {
                     <tbody>
                       {customers.map(customer => (
                         <tr key={customer.id}>
-                          <td><img src={`http://localhost:8087/${customer.picture}`} className="img-circle" alt="User" width="50" height="50" /></td>
+                          <td className="table-img"><img src={`http://localhost:8087/${customer.picture}`} alt="User" width="50" height="50" /></td>
                           <td>{customer.first_name}</td>
                           <td>{customer.mobile}</td>
                           <td>{customer.email}</td>
@@ -58,8 +229,8 @@ const CustomerList = () => {
                           <td>{customer.created_at}</td>
                           <td><span className={customer.status === 'Active' ? 'label-custom label label-default' : 'label-danger label label-default'}>{customer.status}</span></td>
                           <td>
-                            <button type="button" className="btn btn-add btn-sm" data-toggle="modal" data-target="#customerEditModal"><i className="fa fa-pencil"></i></button>
-                            <button type="button" className="btn btn-danger btn-sm" data-toggle="modal" data-target="#customerDeleteModal"><i className="fa fa-trash-o"></i> </button>
+                            <button type="button" className="btn btn-add btn-sm" onClick={() => handleEdit(customer)}>Edit</button>
+                            <button type="button" className="btn btn-danger btn-sm" onClick={() => { setSelectedCustomer(customer); setShowDeleteModal(true); }}>Delete</button>
                           </td>
                         </tr>
                       ))}
@@ -71,15 +242,18 @@ const CustomerList = () => {
           </div>
         </div>
       </section>
-      {/* Modals for edit and delete */}
-      {/* Customer Edit Modal */}
-      <div className="modal fade" id="customerEditModal" tabIndex="-1" role="dialog" aria-hidden="true">
-        {/* Modal content */}
-      </div>
-      {/* Customer Delete Modal */}
-      <div className="modal fade" id="customerDeleteModal" tabIndex="-1" role="dialog" aria-hidden="true">
-        {/* Modal content */}
-      </div>
+      <EditCustomerModal
+        showEditModal={showEditModal}
+        setShowEditModal={setShowEditModal}
+        selectedCustomer={selectedCustomer}
+        onEditSuccess={handleEditSuccess} // Pass the onEditSuccess function
+      />
+      <DeleteCustomerModal
+        showDeleteModal={showDeleteModal}
+        setShowDeleteModal={setShowDeleteModal}
+        handleDelete={handleDelete}
+        selectedCustomer={selectedCustomer}
+      />
     </div>
   );
 };
