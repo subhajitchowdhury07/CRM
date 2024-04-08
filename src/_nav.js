@@ -10,6 +10,7 @@ import {
   cilNotes,
   cilPencil,
   cilPuzzle,
+  cilCreditCard,
   cilSpeedometer,
   cilStar,
 } from '@coreui/icons'
@@ -46,12 +47,50 @@ const _nav = [
         name: 'List',
         to: '/customers/listCustomer',
       },
-      {
-        component: CNavItem,
-        name: 'Group',
-        to: '/customers/groupCustomer',
-      },
+      // {
+      //   component: CNavItem,
+      //   name: 'Group',
+      //   to: '/customers/groupCustomer',
+      // },
     ],
   },
+  {
+    component: CNavGroup,
+    name: 'Transaction',
+    to: '/transaction',
+    icon: <CIcon icon={cilCreditCard} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'New Deposit',
+        to: '/transaction/NewDeposite',
+      },
+      {
+        component: CNavItem,
+        name: 'New Expense',
+        to: '/transaction/NewExpense',
+      },
+      {
+        component: CNavItem,
+        name: 'Transfer',
+        to: '/transaction/Transfer',
+      },
+      {
+        component: CNavItem,
+        name: 'View Transection',
+        to: '/transaction/ViewTransaction',
+      },
+      {
+        component: CNavItem,
+        name: 'Balance Sheet',
+        to: '/Transaction/BalanceSheet',
+      },
+      {
+        component: CNavItem,
+        name: 'Transfer Report',
+        to: '/Transaction/TransferReport',
+      },
+    ],
+    },
 ]
 export default _nav

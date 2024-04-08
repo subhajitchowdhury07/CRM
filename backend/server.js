@@ -170,6 +170,40 @@ app.delete('/customers/:id', (req, res) => {
     });
 });
 
-app.listen(8087, () => {
-    console.log("Server listening on port 8087");
+// API endpoint to add a new deposit
+app.post('/transaction/NewDeposit', (req, res) => {
+    const { account, date, description, amount } = req.body;
+
+    const sql = `INSERT INTO deposits (account, date, description, amount) VALUES (?, ?, ?, ?)`;
+    const values = [account, date, description, amount];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error adding deposit:', err);
+            return res.status(500).send('Error adding deposit');
+        }
+        console.log('Deposit added successfully');
+        res.status(200).send('Deposit added successfully');
+    });
+});
+
+// API endpoint to fetch list of recent deposits
+app.get('/transaction/recent', (req, res) => {
+    const sql = `SELECT description, amount FROM deposits ORDER BY date DESC LIMIT 10`;
+
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error fetching recent deposits:', err);
+            return res.status(500).send('Error fetching recent deposits');
+        }
+        console.log('Recent deposits fetched successfully');
+        res.status(200).json(result);
+    });
+});
+
+
+
+const PORT = process.env.PORT || 8087;
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
 });

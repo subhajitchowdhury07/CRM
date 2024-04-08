@@ -24,7 +24,13 @@ const Tooltips = React.lazy(() => import('./views/base/tooltips/Tooltips'))
 // const AddCar = React.lazy(() => import('./views/Car/AddCar'))
 const addCustomer = React.lazy(() => import('./views/customers/addCustomer'))
 const listCustomer = React.lazy(() => import('./views/customers/listCustomer'))
-const groupCustomer = React.lazy(() => import('./views/customers/groupCustomer'))
+// const groupCustomer = React.lazy(() => import('./views/customers/groupCustomer'))
+const NewDeposite = React.lazy(() => import('./views/transaction/NewDeposite'))
+const NewExpense = React.lazy(() => import('./views/transaction/NewExpense'))
+const Transfer = React.lazy(() => import('./views/transaction/Transfer'))
+const ViewTransection = React.lazy(() => import('./views/transaction/ViewTransaction'))
+const BalanceSheet = React.lazy(() => import('./views/transaction/BalanceSheet'))
+const TransferReport = React.lazy(() => import('./views/transaction/TransferReport'))
 
 // Buttons
 const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'))
@@ -97,8 +103,14 @@ const routes = [
   // { path: '/customer', name: 'Products', elem },
   { path: '/customers/addCustomer', name: 'Add Customer', element: addCustomer },
   { path: '/customers/listCustomer', name: 'List', element: listCustomer },
-  { path: '/customers/groupCustomer', name: 'Group', element: groupCustomer },
+  // { path: '/customers/groupCustomer', name: 'Group', element: groupCustomer },
   // { path: '/Car/AddCar', name: 'Add Car', element: AddCar },
+  { path: '/transaction/NewDeposite', name: 'transaction', element: NewDeposite },
+  { path: '/transaction/NewExpense', name: 'transaction', element: NewExpense },
+  { path: '/transaction/Transfer', name: 'transaction', element: Transfer },
+  { path: '/transaction/ViewTransaction', name: 'transaction', element: ViewTransection },
+  { path: '/transaction/BalanceSheet', name: 'transaction', element: BalanceSheet },
+  { path: '/transaction/TransferReport', name: 'transaction', element: TransferReport },
 ]
 
 export default routes

@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import '../../../scss/style.css';
+import editPng from '../../../assets/images/edit.png';
+import deletePng from '../../../assets/images/delete.png';
 
-const EditCustomerModal = ({ showEditModal, setShowEditModal, selectedCustomer, onEditSuccess }) => {
+const EditCustomerModal = ({ showEditModal, setShowEditModal, selectedCustomer, onEditSuccess, setCustomers, setOpenSnackbar }) => {
   const [formData, setFormData] = useState({
     firstName: '',
-    lastName: '',
+    // lastName: '',
     email: '',
     mobile: '',
     address: '',
@@ -17,7 +21,7 @@ const EditCustomerModal = ({ showEditModal, setShowEditModal, selectedCustomer, 
     if (selectedCustomer) {
       setFormData({
         firstName: selectedCustomer.first_name || '',
-        lastName: selectedCustomer.last_name || '',
+        // lastName: selectedCustomer.last_name || '',
         email: selectedCustomer.email || '',
         mobile: selectedCustomer.mobile || '',
         address: selectedCustomer.address || '',
@@ -38,6 +42,7 @@ const EditCustomerModal = ({ showEditModal, setShowEditModal, selectedCustomer, 
       console.log('Customer updated:', response.data);
       onEditSuccess(response.data); // Update state with the updated customer data
       setShowEditModal(false);
+      setOpenSnackbar(true); // Set Snackbar visibility
     } catch (error) {
       console.error('Error updating customer:', error);
     }
@@ -59,10 +64,10 @@ const EditCustomerModal = ({ showEditModal, setShowEditModal, selectedCustomer, 
                 <label htmlFor="firstName">First Name</label>
                 <input type="text" className="form-control" id="firstName" name="firstName" value={formData.firstName} onChange={handleChange} />
               </div>
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label htmlFor="lastName">Last Name</label>
                 <input type="text" className="form-control" id="lastName" name="lastName" value={formData.lastName} onChange={handleChange} />
-              </div>
+              </div> */}
               <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input type="email" className="form-control" id="email" name="email" value={formData.email} onChange={handleChange} />
@@ -79,9 +84,9 @@ const EditCustomerModal = ({ showEditModal, setShowEditModal, selectedCustomer, 
                 <label htmlFor="customerType">Customer Type</label>
                 <select className="form-control" id="customerType" name="customerType" value={formData.customerType} onChange={handleChange}>
                   <option value="">Select Type</option>
-                  <option value="Regular">Regular</option>
-                  <option value="Vendor">Vendor</option>
-                  <option value="VIP">VIP</option>
+                  <option value="regular">Regular</option>
+                  <option value="vendor">Vendor</option>
+                  <option value="vip">VIP</option>
                 </select>
               </div>
               <div className="form-group">
@@ -101,7 +106,7 @@ const EditCustomerModal = ({ showEditModal, setShowEditModal, selectedCustomer, 
   );
 };
 
-const DeleteCustomerModal = ({ showDeleteModal, setShowDeleteModal, handleDelete, selectedCustomer }) => {
+const DeleteCustomerModal = ({ showDeleteModal, setShowDeleteModal, handleDelete, selectedCustomer, setOpenSnackbar }) => {
   const handleConfirmDelete = async () => {
     if (!selectedCustomer) {
       console.error('No customer selected for deletion');
@@ -110,6 +115,7 @@ const DeleteCustomerModal = ({ showDeleteModal, setShowDeleteModal, handleDelete
     try {
       await handleDelete(selectedCustomer);
       setShowDeleteModal(false);
+      setOpenSnackbar(true); // Set Snackbar visibility
     } catch (error) {
       console.error('Error deleting customer:', error);
     }
@@ -143,6 +149,7 @@ const CustomerList = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false); // State variable for Snackbar visibility
 
   useEffect(() => {
     const fetchData = async () => {
@@ -168,6 +175,7 @@ const CustomerList = () => {
       await axios.delete(`http://localhost:8087/customers/${customer.id}`);
       setShowDeleteModal(false);
   
+      // Fetch updated customer data after deletion
       try {
         const response = await axios.get('http://localhost:8087/customers/listCustomer');
         setCustomers(response.data);
@@ -229,9 +237,15 @@ const CustomerList = () => {
                           <td>{customer.created_at}</td>
                           <td><span className={customer.status === 'Active' ? 'label-custom label label-default' : 'label-danger label label-default'}>{customer.status}</span></td>
                           <td>
-                            <button type="button" className="btn btn-add btn-sm" onClick={() => handleEdit(customer)}>Edit</button>
-                            <button type="button" className="btn btn-danger btn-sm" onClick={() => { setSelectedCustomer(customer); setShowDeleteModal(true); }}>Delete</button>
-                          </td>
+    <button type="button" className="edit-button" onClick={() => handleEdit(customer)}>
+        <img src={editPng} alt="Edit" width="20" height="20" />
+    </button>
+    <button type="button" className="delete-button" onClick={() => { setSelectedCustomer(customer); setShowDeleteModal(true); }}>
+        <img src={deletePng} alt="Delete" width="20" height="20" />
+    </button>
+</td>
+
+
                         </tr>
                       ))}
                     </tbody>
@@ -247,13 +261,30 @@ const CustomerList = () => {
         setShowEditModal={setShowEditModal}
         selectedCustomer={selectedCustomer}
         onEditSuccess={handleEditSuccess} // Pass the onEditSuccess function
+        setCustomers={setCustomers} // Pass setCustomers to update the table
+        setOpenSnackbar={setOpenSnackbar} // Pass setOpenSnackbar function
       />
       <DeleteCustomerModal
         showDeleteModal={showDeleteModal}
         setShowDeleteModal={setShowDeleteModal}
         handleDelete={handleDelete}
         selectedCustomer={selectedCustomer}
+        setOpenSnackbar={setOpenSnackbar} // Pass setOpenSnackbar function
       />
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)} // Close Snackbar on action
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={() => setOpenSnackbar(false)} // Close Snackbar on action
+          severity="success"
+        >
+          Operation successful
+        </MuiAlert>
+      </Snackbar>
     </div>
   );
 };
