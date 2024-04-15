@@ -170,6 +170,31 @@ app.delete('/customers/:id', (req, res) => {
     });
 });
 
+/// API endpoint to fetch all invoices
+app.get('/sales/invoices', (req, res) => {
+    const sql = `SELECT 
+        id,
+        invoiceNo,
+        customerName,
+        total,
+        invoiceDate,
+        pdcDueDate,
+        paymentTerm,
+        status
+    FROM invoices`;
+
+    // Execute SQL query
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error('Error fetching invoice data:', err);
+            return res.status(500).send('Error fetching invoice data');
+        }
+        console.log('Invoice data fetched successfully');
+        res.status(200).json(result);
+    });
+});
+
+
 // API endpoint to add a new deposit
 app.post('/transaction/NewDeposit', (req, res) => {
     const { account, date, description, amount } = req.body;
@@ -201,6 +226,202 @@ app.get('/transaction/recent', (req, res) => {
     });
 });
 
+// API endpoint to add a new invoice
+app.post('/sales/NewInvoice', (req, res) => {
+    const {
+        invoiceNo,
+        invoiceDate,
+        refNo,
+        refDate,
+        reverseCharge,
+        billType,
+        placeOfSupply,
+        paymentTerm,
+        pdcDueDate,
+        customerName,
+        billingAddress,
+        shippingAddress,
+        gstin,
+        state,
+        contactPerson,
+        itemCode,
+        itemName,
+        quantity,
+        uom,
+        itemRate,
+        taxPercentage,
+        discount,
+        total,
+        pinCode,
+        hsnSacNumber,
+        statusValue,
+        bankName,
+        ifscCode,
+        accountNumber,
+        micrNumber,
+        bankDetails
+    } = req.body;
+
+    const sql = `INSERT INTO invoices (
+        invoiceNo,
+        invoiceDate,
+        refNo,
+        refDate,
+        reverseCharge,
+        billType,
+        placeOfSupply,
+        paymentTerm,
+        pdcDueDate,
+        customerName,
+        billingAddress,
+        shippingAddress,
+        gstin,
+        state,
+        contactPerson,
+        itemCode,
+        itemName,
+        quantity,
+        uom,
+        itemRate,
+        taxPercentage,
+        discount,
+        total,
+        pinCode,
+        hsnSacNumber,
+        statusValue,
+        bankName,
+        ifscCode,
+        accountNumber,
+        micrNumber,
+        bankDetails
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+    const values = [
+        invoiceNo,
+        invoiceDate,
+        refNo,
+        refDate,
+        reverseCharge,
+        billType,
+        placeOfSupply,
+        paymentTerm,
+        pdcDueDate,
+        customerName,
+        billingAddress,
+        shippingAddress,
+        gstin,
+        state,
+        contactPerson,
+        itemCode,
+        itemName,
+        quantity,
+        uom,
+        itemRate,
+        taxPercentage,
+        discount,
+        total,
+        pinCode,
+        hsnSacNumber,
+        statusValue,
+        bankName,
+        ifscCode,
+        accountNumber,
+        micrNumber,
+        bankDetails,
+    ];
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error adding invoice:', err);
+            return res.status(500).send('Error adding invoice');
+        }
+        console.log('Invoice added successfully');
+        res.status(200).send('Invoice added successfully');
+    });
+});
+
+// API endpoint to update invoice details
+app.put('/sales/invoices/:id', (req, res) => {
+    const invoiceId = req.params.id;
+    // Extract the fields to update from the request body
+    const { 
+        invoiceNo,
+        customerName,
+        invoiceDate,
+        total,
+        pdcDueDate,
+        paymentTerm,
+        status
+    } = req.body;
+
+    // Construct the SQL query to update the invoice
+    let sql = `UPDATE invoices SET `;
+    const values = [];
+
+    // Check each field for update
+    if (invoiceNo) {
+        sql += `invoiceNo = ?, `;
+        values.push(invoiceNo);
+    }
+    if (customerName) {
+        sql += `customerName = ?, `;
+        values.push(customerName);
+    }
+    if (invoiceDate) {
+        sql += `invoiceDate = ?, `;
+        values.push(invoiceDate);
+    }
+    if (total) {
+        sql += `total = ?, `;
+        values.push(total);
+    }
+    if (pdcDueDate) {
+        sql += `pdcDueDate = ?, `;
+        values.push(pdcDueDate);
+    }
+    if (paymentTerm) {
+        sql += `paymentTerm = ?, `;
+        values.push(paymentTerm);
+    }
+    if (status) {
+        sql += `status = ?, `;
+        values.push(status);
+    }
+
+    // Remove the last comma and space
+    sql = sql.slice(0, -2);
+    // Add WHERE clause
+    sql += ` WHERE id = ?`;
+    values.push(invoiceId);
+
+    // Execute the SQL query
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error updating invoice:', err);
+            return res.status(500).send('Error updating invoice');
+        }
+        console.log('Invoice updated successfully');
+        res.status(200).send('Invoice updated successfully');
+    });
+});
+
+// API endpoint to delete an invoice
+app.delete('/sales/invoices/:id', (req, res) => {
+    const invoiceId = req.params.id;
+
+    // Construct the SQL query to delete the invoice
+    const sql = `DELETE FROM invoices WHERE id = ?`;
+
+    // Execute the SQL query
+    db.query(sql, invoiceId, (err, result) => {
+        if (err) {
+            console.error('Error deleting invoice:', err);
+            return res.status(500).send('Error deleting invoice');
+        }
+        console.log('Invoice deleted successfully');
+        res.status(200).send('Invoice deleted successfully');
+    });
+});
 
 
 const PORT = process.env.PORT || 8087;

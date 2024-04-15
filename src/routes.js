@@ -32,6 +32,16 @@ const ViewTransection = React.lazy(() => import('./views/transaction/ViewTransac
 const BalanceSheet = React.lazy(() => import('./views/transaction/BalanceSheet'))
 const TransferReport = React.lazy(() => import('./views/transaction/TransferReport'))
 
+//sales
+const Invoices = React.lazy(() => import('./views/sales/Invoices'))
+const NewInvoices = React.lazy(() => import('./views/sales/NewInvoices'))
+const RecurringInvoices = React.lazy(() => import('./views/sales/RecurringInvoices'))
+const NewRecurringInvoices = React.lazy(() => import('./views/sales/NewRecurringInvoices'))
+const Quotes = React.lazy(() => import('./views/sales/Quotes'))
+const NewQuote = React.lazy(() => import('./views/sales/NewQuote'))
+const Payments = React.lazy(() => import('./views/sales/Payments'))
+const TaxRate = React.lazy(() => import('./views/sales/TaxRate'))
+
 // Buttons
 const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'))
 const ButtonGroups = React.lazy(() => import('./views/buttons/button-groups/ButtonGroups'))
@@ -59,7 +69,6 @@ const Alerts = React.lazy(() => import('./views/notifications/alerts/Alerts'))
 const Badges = React.lazy(() => import('./views/notifications/badges/Badges'))
 const Modals = React.lazy(() => import('./views/notifications/modals/Modals'))
 const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
-
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 const routes = [
@@ -111,6 +120,16 @@ const routes = [
   { path: '/transaction/ViewTransaction', name: 'transaction', element: ViewTransection },
   { path: '/transaction/BalanceSheet', name: 'transaction', element: BalanceSheet },
   { path: '/transaction/TransferReport', name: 'transaction', element: TransferReport },
+  //sales
+  { path: '/sales/Invoices', name: 'sales', element: Invoices },
+  { path: '/sales/NewInvoices', name: 'sales', element: NewInvoices },
+  { path: '/sales/RecurringInvoices', name: 'sales', element: RecurringInvoices },
+  { path: '/sales/NewRecurringInvoices', name: 'sales', element: NewRecurringInvoices },
+  { path: '/sales/Quotes', name: 'sales', element: Quotes },
+  { path: '/sales/NewQuote', name: 'sales', element: NewQuote },
+  { path: '/sales/Payments', name: 'sales', element: Payments },
+  { path: '/sales/TaxRate', name: 'sales', element: TaxRate },
+  
 ]
 
 export default routes

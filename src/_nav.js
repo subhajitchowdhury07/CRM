@@ -13,6 +13,7 @@ import {
   cilCreditCard,
   cilSpeedometer,
   cilStar,
+  cilCart,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -92,5 +93,53 @@ const _nav = [
       },
     ],
     },
+    {
+      component: CNavGroup,
+      name: 'Sales',
+      to: '/sales',
+      icon: <CIcon icon={cilCart} customClassName="nav-icon" />,
+      items: [
+        {
+          component: CNavItem,
+          name: 'Invoices',
+          to: '/sales/Invoices',
+        },
+        {
+          component: CNavItem,
+          name: 'New Invoices',
+          to: '/sales/NewInvoices',
+        },
+        {
+          component: CNavItem,
+          name: 'Recurring invoices',
+          to: '/sales/RecurringInvoices',
+        },
+        {
+          component: CNavItem,
+          name: 'New Recurring invoices',
+          to: '/sales/NewRecurringInvoices',
+        },
+        {
+          component: CNavItem,
+          name: 'quotes',
+          to: '/sales/Quotes',
+        },
+        {
+          component: CNavItem,
+          name: 'New quote',
+          to: '/sales/NewQuote',
+        },
+        {
+          component: CNavItem,
+          name: 'Payments',
+          to: '/sales/Payments',
+        },
+        {
+          component: CNavItem,
+          name: 'Tax Rate',
+          to: '/sales/TaxRate',
+        },
+
+      ],},
 ]
 export default _nav
