@@ -288,7 +288,7 @@ app.post('/sales/NewInvoice', (req, res) => {
         total,
         pinCode,
         hsnSacNumber,
-        statusValue,
+        status,
         bankName,
         ifscCode,
         accountNumber,

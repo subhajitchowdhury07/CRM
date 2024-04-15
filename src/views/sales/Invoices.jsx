@@ -6,6 +6,7 @@ import editPng from '../../assets/images/edit.png';
 import deletePng from '../../assets/images/delete.png';
 import '../../scss/style.css';
 
+// eslint-disable-next-line react/prop-types
 const EditInvoiceModal = ({ showEditModal, setShowEditModal, selectedInvoice, onEditSuccess, setOpenSnackbar }) => {
     const [formData, setFormData] = useState({
       invoiceNo: '',

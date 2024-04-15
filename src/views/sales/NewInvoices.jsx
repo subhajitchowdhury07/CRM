@@ -43,11 +43,32 @@ const NewINvoice = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value
-    }));
+    let newFormData = { ...formData };
+  
+    if (name === 'quantity' || name === 'itemRate' || name === 'taxPercentage') {
+      // Update the changed field value first
+      newFormData[name] = value;
+  
+      const quantity = parseFloat(newFormData.quantity) || 0;
+      const itemRate = parseFloat(newFormData.itemRate) || 0;
+      const taxPercentage = parseFloat(newFormData.taxPercentage) || 0;
+  
+      let subtotal = quantity * itemRate;
+      let total = subtotal;
+  
+      if (!isNaN(taxPercentage)) {
+        total -= (subtotal * taxPercentage) / 100;
+      }
+  
+      newFormData.total = total.toFixed(2); // Update the total
+    } else {
+      newFormData[name] = value; // Update other fields
+    }
+  
+    setFormData(newFormData);
   };
+  
+  
 
   const handleReset = () => {
     setFormData({ ...initialFormData });
@@ -57,8 +78,8 @@ const NewINvoice = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:8087/sales/NewInvoice', formData);
-      if (response.status === 200) {
-        console.log('Invoice add successfully');
+      if (response.status === 200 || response.status === 201) {
+        console.log('Invoice added successfully');
         setShowSuccessPopup(true);
         handleReset(); // Reset the form after successful submission
       } else {
@@ -72,6 +93,7 @@ const NewINvoice = () => {
       alert('Error adding Invoice');
     }
   };
+  
 
   const handlePopupClose = () => {
     setShowSuccessPopup(false);
