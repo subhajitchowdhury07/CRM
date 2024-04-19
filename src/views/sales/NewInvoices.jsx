@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import '../../scss/addCustomer.css';
 import successGif from '../../assets/images/success.gif';
+import { color } from '@mui/system';
+import { red } from '@mui/material/colors';
 
 const NewINvoice = () => {
   const initialFormData = {
@@ -44,29 +46,37 @@ const NewINvoice = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     let newFormData = { ...formData };
-  
-    if (name === 'quantity' || name === 'itemRate' || name === 'taxPercentage') {
-      // Update the changed field value first
-      newFormData[name] = value;
-  
-      const quantity = parseFloat(newFormData.quantity) || 0;
-      const itemRate = parseFloat(newFormData.itemRate) || 0;
-      const taxPercentage = parseFloat(newFormData.taxPercentage) || 0;
-  
-      let subtotal = quantity * itemRate;
-      let total = subtotal;
-  
-      if (!isNaN(taxPercentage)) {
-        total -= (subtotal * taxPercentage) / 100;
-      }
-  
-      newFormData.total = total.toFixed(2); // Update the total
+
+    if (name === 'quantity' || name === 'itemRate' || name === 'taxPercentage' || name === 'discount') {
+        // Update the changed field value first
+        newFormData[name] = value;
+
+        const quantity = parseFloat(newFormData.quantity) || 0;
+        const itemRate = parseFloat(newFormData.itemRate) || 0;
+        const taxPercentage = parseFloat(newFormData.taxPercentage) || 0;
+        const discountPercentage = parseFloat(newFormData.discount) || 0;
+
+        let subtotal = quantity * itemRate;
+        let total = subtotal;
+
+        // Apply tax
+        if (!isNaN(taxPercentage)) {
+            total += (subtotal * taxPercentage) / 100;
+        }
+
+        // Apply discount
+        if (!isNaN(discountPercentage)) {
+            total -= (subtotal * discountPercentage) / 100;
+        }
+
+        newFormData.total = total.toFixed(2); // Update the total
     } else {
-      newFormData[name] = value; // Update other fields
+        newFormData[name] = value; // Update other fields
     }
-  
+
     setFormData(newFormData);
-  };
+};
+
   
   
 
@@ -402,7 +412,7 @@ const NewINvoice = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Tax Percentage (%)</label>
+                    <label>GST(%)</label>
                     <input
                       type="number"
                       className="form-control"
@@ -414,7 +424,7 @@ const NewINvoice = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Discount</label>
+                    <label>Discount (%)</label>
                     <input
                       type="number"
                       className="form-control"
@@ -430,11 +440,12 @@ const NewINvoice = () => {
                     <input
                       type="number"
                       className="form-control"
-                      placeholder="Enter Total"
+                      placeholder="total"
                       name="total"
                       value={formData.total}
                       onChange={handleChange}
-                      required
+                    //   required
+                      disabled
                     />
                   </div>
                   <div className="form-group">

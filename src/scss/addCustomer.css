@@ -105,3 +105,26 @@
   padding:10px;
 
 }
+
+/* Snackbar */
+.snackbar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 20px;
+  background-color: #4caf50;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.snackbar.open {
+  opacity: 1;
+}
+
+.snackbar.closed {
+  opacity: 0;
+}

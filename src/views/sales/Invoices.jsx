@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Snackbar from '@mui/material/Snackbar';
@@ -88,7 +89,7 @@ const EditInvoiceModal = ({ showEditModal, setShowEditModal, selectedInvoice, on
                 </div>
                 <div className="form-group">
                   <label htmlFor="total">Total</label>
-                  <input type="text" className="form-control" id="total" name="total" value={formData.total} onChange={handleChange} />
+                  <input type="text" className="form-control" id="total" name="total" value={formData.total} onChange={handleChange} disabled/>
                 </div>
                 <div className="form-group">
                   <label htmlFor="invoiceDate">Invoice Date</label>
@@ -268,7 +269,18 @@ const InvoiceList = () => {
                           <td>{formatDate(invoice.invoiceDate)}</td>
                           <td>{formatDate(invoice.pdcDueDate)}</td>
                           <td>{invoice.paymentTerm}</td>
-                          <td>{invoice.status}</td>
+                          <td>
+  <span style={{
+    display: 'inline-block',
+    padding: '4px 8px',
+    borderRadius: '4px',
+    backgroundColor: invoice.status === 'Active' ? '#368a37' : '#942527',
+    color: 'white',
+    width: '75px', // Adjust the width as needed
+    textAlign: 'center' // Center align text horizontally
+  }}>{invoice.status}</span>
+</td>
+
                           <td>
                             <button type="button" className="edit-button" onClick={() => handleEdit(invoice)}>
                               <img src={editPng} alt="Edit" width="20" height="20" />
