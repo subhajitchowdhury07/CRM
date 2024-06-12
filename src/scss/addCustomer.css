@@ -1,0 +1,130 @@
+/* AddCustomer.css */
+
+/* Custom styles for form inputs */
+.form-group {
+  margin-bottom: 20px;
+  display: inline-block;
+  margin-right: 20px; /* Add right margin */
+  margin-top: 10px; /* Add top margin */
+  
+}
+
+  
+  .form-group label {
+    font-weight: bold;
+  }
+  
+  .form-control {
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+  }
+  
+  textarea.form-control {
+    height: auto;
+    padding: 20px;
+  }
+  
+  /* Styling for buttons */
+  .reset-button {
+    margin-top: 20px;
+  }
+  
+  .reset-button .btn {
+    margin-right: 10px;
+  }
+  
+  .btn-add {
+    background-color: #5cb85c;
+    color: #fff;
+  }
+  
+  .btn-add:hover {
+    background-color: #4cae4c;
+  }
+  .success-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure the popup appears on top of other elements */
+  }
+  
+  .success-popup-content {
+    background-color: #fff; /* White background for popup content */
+    padding: 40px; /* Increased padding */
+    border-radius: 20px; /* Increased border radius for rounded corners */
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Increased box shadow for depth effect */
+  }
+  
+  .success-popup-content img {
+    width: 150px; /* Increased width of the image */
+    margin-bottom: 30px; /* Increased margin bottom to separate the image from other content */
+  }
+  
+  .success-popup-content p {
+    color: #212121; /* Dark color for text */
+    font-size: 24px; /* Increased font size */
+    font-weight: bold; /* Bold font weight */
+    margin-bottom: 30px; /* Increased margin bottom to separate paragraphs */
+  }
+  
+  .success-popup-content button {
+    background-color: #3f8fc5; /* Green color for button */
+    color: #fff; /* White text color */
+    border: none; /* No border */
+    padding: 10px 30px; /* Increased padding for button */
+    font-size: 20px; /* Increased font size for button text */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Cursor style on hover */
+  }
+  
+  .success-popup-content button:hover {
+    background-color: #1467ac; /* Darker green color on hover */
+  }
+ .table-img img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+.custom-heading{
+  background-color: #137272d5;
+  padding: 10px;
+}
+.bank-name{
+  padding:10px;
+
+}
+
+/* Snackbar */
+.snackbar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 20px;
+  background-color: #4caf50;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.snackbar.open {
+  opacity: 1;
+}
+
+.snackbar.closed {
+  opacity: 0;
+}

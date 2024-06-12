@@ -1,0 +1,94 @@
+.table-img img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  
+  .modal.show {
+    display: block;
+  }
+  
+  /* Modal Content */
+  .modal-dialog {
+    position: relative;
+    margin: 10% auto;
+    width: 50%;
+    max-width: 600px;
+  }
+  
+  .modal-content {
+    position: relative;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    color:#212121;
+  }
+  
+  /* Modal Header */
+  .modal-header {
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .modal-title {
+    margin: 0;
+    font-size: 20px;
+  }
+  
+  /* Modal Body */
+  .modal-body {
+    padding: 15px;
+  }
+  
+  /* Close Button */
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    color: #aaa;
+    cursor: pointer;
+  }
+  
+  .close:hover {
+    color: #888;
+  }
+  .btn-add {
+    background-color: #5cb85c;
+    color: #fff;
+  }
+  
+  .btn-add:hover {
+    background-color: #4cae4c;
+  }
+
+  .edit-button,
+.delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px; /* Adjust padding for size */
+    margin-right: 8px; /* Adjust margin for spacing */
+}
+
+/* Adjust margin and padding as needed for spacing */
+.edit-button img,
+.delete-button img {
+    margin: 0;
+    padding: 0;
+    width: 30px; /* Increase width for larger size */
+    height: 30px; /* Increase height for larger size */
+}
