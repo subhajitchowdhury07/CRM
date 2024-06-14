@@ -6,6 +6,7 @@ const salesRouter = require('./routers/saleRoute')
 const customerRouter = require('./routers/customerRoute')
 const transactionRouter = require('./routers/transactionRoute')
 const stockRouter = require('./routers/stockRoute')
+const taskRouter = require('./routers/taskRoute')
 
 const app = express()
 app.use(cors())
@@ -19,5 +20,7 @@ app.use('/sales', salesRouter)
 app.use('/customers', customerRouter)
 app.use('/transaction', transactionRouter)
 app.use('/stock', stockRouter)
+app.use('/tasks', taskRouter)
+
 
 module.exports = app

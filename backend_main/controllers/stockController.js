@@ -242,3 +242,89 @@ exports.getAllProducts = (req, res) => {
         res.json(results);
     });
 };
+
+
+// Assign stock to a customer
+exports.AssignStock = (req, res) => {
+    const { stockId, customer_id, assignData } = req.body;
+    const { quantity, location, project } = assignData;
+
+    // Check if there is enough quantity in stock
+    const stockQuery = 'SELECT * FROM stocks WHERE id = ?';
+    db.query(stockQuery, [stockId], (stockErr, stockResults) => {
+        if (stockErr) {
+            console.error('Error fetching stock:', stockErr);
+            return res.status(500).json({ error: 'Server error' });
+        }
+
+        const stock = stockResults[0];
+        if (!stock || stock.quantity < quantity) {
+            return res.status(400).json({ error: 'Insufficient stock quantity' });
+        }
+
+        // Insert assigned stock data into the database
+        const assignQuery = 'INSERT INTO assigned_stocks (stock_id, customer_id, quantity, location, project) VALUES (?, ?, ?, ?, ?)';
+        db.query(assignQuery, [stockId, customer_id, quantity, location, project], async (assignErr, assignResults) => {
+            if (assignErr) {
+                console.error('Error assigning stock:', assignErr);
+                return res.status(500).json({ error: 'Server error' });
+            }
+
+            // Subtract assigned quantity from stock
+            const updateQuery = 'UPDATE stocks SET quantity = quantity - ? WHERE id = ?';
+            db.query(updateQuery, [quantity, stockId], async (updateErr) => {
+                if (updateErr) {
+                    console.error('Error updating stock quantity:', updateErr);
+                    return res.status(500).json({ error: 'Server error' });
+                }
+
+                // Fetch the newly inserted record with customer's first_name, last_name, and email
+                const assignedStockQuery = `
+                    SELECT a.*, c.first_name, c.last_name, c.email
+                    FROM assigned_stocks a
+                    INNER JOIN customers c ON a.customer_id = c.id
+                    WHERE a.id = ?
+                `;
+                db.query(assignedStockQuery, [assignResults.insertId], (fetchErr, fetchResults) => {
+                    if (fetchErr) {
+                        console.error('Error fetching assigned stock:', fetchErr);
+                        return res.status(500).json({ error: 'Server error' });
+                    }
+
+                    res.status(200).json(fetchResults[0]); // Send the newly assigned stock data with customer details in the response
+                });
+            });
+        });
+    });
+};
+
+
+
+
+
+// exports.AllAssignedStocks = async (req, res) => {
+//     try {
+//         // Fetch assigned stock details from the database
+//         const assignedStocks = await db.query('SELECT * FROM assigned_stocks');
+
+//         res.status(200).json(assignedStocks); // Send the assigned stock details in the response
+//     } catch (error) {
+//         console.error('Error fetching assigned stocks:', error);
+//         res.status(500).json({ error: 'Error fetching assigned stocks' });
+//     }
+// };
+
+// Get all assigned stocks
+exports.AllAssignedStocks = (req, res) => {
+    const query = `
+        SELECT id, customer_id, quantity, location, project 
+        FROM assigned_stocks
+    `;
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching assigned stock details:', err);
+            return res.status(500).send('Server error');
+        }
+        res.json(results);
+    });
+};

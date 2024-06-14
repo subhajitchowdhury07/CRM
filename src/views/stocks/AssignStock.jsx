@@ -5,102 +5,125 @@ import { Assignment } from '@mui/icons-material';
 import '../../scss/stocks.css'; // Import CSS file for styling
 
 const AssignStockPage = () => {
-    const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
     const [stocks, setStocks] = useState([]);
-    const [selectedProduct, setSelectedProduct] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
+    const [categories, setCategories] = useState([]);
     const [selectedStock, setSelectedStock] = useState('');
     const [assignData, setAssignData] = useState({
-        user: '',
+        customer_id: '',
+        quantity: 0,
         location: '',
         project: '',
-        quantity: 0,
     });
+    const [assignedStockDetails, setAssignedStockDetails] = useState([]);
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [customerList, setCustomerList] = useState([]);
 
     useEffect(() => {
         fetchData();
+        fetchCustomerList();
+        fetchAssignedStockDetails(); // Fetch assigned stock details
     }, []);
 
     const fetchData = async () => {
         try {
-            const productResponse = await axios.get('http://localhost:8087/stock/getAllProducts');
-            const categoryResponse = await axios.get('http://localhost:8087/stock/AllCategories');
             const stockResponse = await axios.get('http://localhost:8087/stock/getAllStocks');
-            setProducts(productResponse.data);
-            setCategories(categoryResponse.data);
+            const categoryResponse = await axios.get('http://localhost:8087/stock/AllCategories');
             setStocks(stockResponse.data);
+            setCategories(categoryResponse.data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
 
-    const handleAssignStock = () => {
-        const { user, location, project, quantity } = assignData;
-        const message = `Assigned ${quantity} units of stock to ${user} for ${project} at ${location}`;
-        setSnackbarMessage(message);
-        setShowSnackbar(true);
-        setAssignData({
-            user: '',
-            location: '',
-            project: '',
-            quantity: 0,
-        });
-        setSelectedProduct('');
-        setSelectedCategory('');
-        setSelectedStock('');
-        setIsDialogOpen(false);
+    const fetchCustomerList = async () => {
+        try {
+            const response = await axios.get('http://localhost:8087/customers/listcustomer');
+            setCustomerList(response.data);
+        } catch (error) {
+            console.error('Error fetching customer list:', error);
+        }
     };
 
-    const openAssignDialog = (product, category, stock) => {
-        setSelectedProduct(product);
-        setSelectedCategory(category);
+    const fetchAssignedStockDetails = async () => {
+        try {
+            const response = await axios.get('http://localhost:8087/stock/AllAssignedStocks');
+            setAssignedStockDetails(response.data);
+        } catch (error) {
+            console.error('Error fetching assigned stock details:', error);
+        }
+    };
+
+    const handleAssignStock = async () => {
+        try {
+            const selectedStockObj = stocks.find(stock => stock.id === selectedStock.id);
+            if (!selectedStockObj || assignData.quantity > selectedStockObj.quantity) {
+                setSnackbarMessage('No more stock available');
+                setShowSnackbar(true);
+                return;
+            }
+
+            const response = await axios.post('http://localhost:8087/stock/AssignStock', {
+                stockId: selectedStock.id,
+                customer_id: assignData.customer_id,
+                assignData: {
+                    quantity: assignData.quantity,
+                    location: assignData.location,
+                    project: assignData.project,
+                },
+            });
+            setAssignedStockDetails([...assignedStockDetails, response.data]);
+            setSnackbarMessage('Stock assigned successfully.');
+            setShowSnackbar(true);
+            setAssignData({
+                customer_id: '',
+                quantity: 0,
+                location: '',
+                project: '',
+            });
+            setSelectedStock('');
+            setIsDialogOpen(false);
+        } catch (error) {
+            console.error('Error assigning stock:', error);
+        }
+    };
+
+    const openAssignDialog = (stock) => {
         setSelectedStock(stock);
         setIsDialogOpen(true);
     };
 
     return (
-        <div className="assign-stock-container"> {/* Apply CSS class for styling */}
+        <div className="assign-stock-container">
             <h1>Assign Stock</h1>
             <table>
                 <thead>
                     <tr>
-                        <th>Product ID</th>
-                        <th>Quote ID</th>
+                        <th>Stock ID</th>
                         <th>Name</th>
-                        <th>Description</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Total</th>
-                        <th>Discount</th>
-                        <th>Tax</th>
                         <th>Category</th>
-                        <th>Stock Quantity</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Supplier</th>
+                        <th>SKU</th>
                         <th>Assign</th>
                     </tr>
                 </thead>
                 <tbody>
                     {stocks.map((stock) => {
-                        const product = products.find(p => p.id === stock.productId);
-                        const category = categories.find(c => c.id === stock.categoryId);
+                        const category = categories.find((c) => c.id === stock.category_id);
                         return (
                             <tr key={stock.id}>
-                                <td>{product?.product_id}</td>
-                                <td>{product?.quote_id}</td>
-                                <td>{product?.name}</td>
-                                <td>{product?.description}</td>
-                                <td>{product?.quantity}</td>
-                                <td>{product?.unit_price}</td>
-                                <td>{product?.total}</td>
-                                <td>{product?.discount}</td>
-                                <td>{product?.tax}</td>
+                                <td>{stock.id}</td>
+                                <td>{stock.name}</td>
                                 <td>{category?.name}</td>
                                 <td>{stock.quantity}</td>
+                                <td>{stock.price}</td>
+                                <td>{stock.supplier}</td>
+                                <td>{stock.sku}</td>
                                 <td>
-                                    <Button variant="contained" onClick={() => openAssignDialog(product, category, stock)}>
+                                    <Button variant="contained" onClick={() => openAssignDialog(stock)}>
                                         Assign
                                     </Button>
                                 </td>
@@ -114,9 +137,22 @@ const AssignStockPage = () => {
                 <DialogTitle>Assign Stock</DialogTitle>
                 <DialogContent>
                     <TextField
-                        label="User"
-                        value={assignData.user}
-                        onChange={(e) => setAssignData({ ...assignData, user: e.target.value })}
+                        select
+                        label="Customer Name"
+                        value={assignData.customer_id}
+                        onChange={(e) => setAssignData({ ...assignData, customer_id: e.target.value })}
+                    >
+                        {customerList.map((customer) => (
+                            <MenuItem key={customer.id} value={customer.id}>
+                                {customer.first_name} ({customer.email})
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        label="Quantity"
+                        type="number"
+                        value={assignData.quantity}
+                        onChange={(e) => setAssignData({ ...assignData, quantity: parseInt(e.target.value) })}
                     />
                     <TextField
                         label="Location"
@@ -128,18 +164,37 @@ const AssignStockPage = () => {
                         value={assignData.project}
                         onChange={(e) => setAssignData({ ...assignData, project: e.target.value })}
                     />
-                    <TextField
-                        label="Quantity"
-                        type="number"
-                        value={assignData.quantity}
-                        onChange={(e) => setAssignData({ ...assignData, quantity: parseInt(e.target.value) })}
-                    />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleAssignStock} startIcon={<Assignment />}>Assign</Button>
+                    <Button onClick={handleAssignStock} startIcon={<Assignment />}>
+                        Assign
+                    </Button>
                     <Button onClick={() => setIsDialogOpen(false)}>Cancel</Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Display Assigned Stock Details */}
+            <h2>Assigned Stock Details</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Quantity Assigned</th>
+                        <th>Location</th>
+                        <th>Project</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {assignedStockDetails.map((assignedStock) => (
+                        <tr key={assignedStock.id}>
+                            <td>{customerList.find(customer => customer.id === assignedStock.customer_id)?.first_name || 'Unknown'}</td>
+                            <td>{assignedStock.quantity}</td>
+                            <td>{assignedStock.location}</td>
+                            <td>{assignedStock.project}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
 
             <Snackbar
                 open={showSnackbar}

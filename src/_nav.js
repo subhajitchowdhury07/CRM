@@ -162,34 +162,34 @@ const _nav = [
           },
 
         ],},
-      {
-        component: CNavGroup,
-        name: 'Report',
-        to: '/reports',
-        icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
-        items: [
-          {
-            component: CNavItem,
-            name: 'Project Report',
-            to: '/reports/ProjectReport',
-          },
-          {
-            component: CNavItem,
-            name: 'Client Report',
-            to: '/reports/ClientReport',
-          },
-          {
-            component: CNavItem,
-            name: 'Expense Report',
-            to: '/reports/ExpenseReport',
-          },
-          {
-            component: CNavItem,
-            name: 'Income Expense Eomparesion',
-            to: '/reports/IncomeExpenseEomparesion',
-          },
+      // {
+      //   component: CNavGroup,
+      //   name: 'Report',
+      //   to: '/reports',
+      //   icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
+      //   items: [
+      //     {
+      //       component: CNavItem,
+      //       name: 'Project Report',
+      //       to: '/reports/ProjectReport',
+      //     },
+      //     {
+      //       component: CNavItem,
+      //       name: 'Client Report',
+      //       to: '/reports/ClientReport',
+      //     },
+      //     {
+      //       component: CNavItem,
+      //       name: 'Expense Report',
+      //       to: '/reports/ExpenseReport',
+      //     },
+      //     {
+      //       component: CNavItem,
+      //       name: 'Income Expense Eomparesion',
+      //       to: '/reports/IncomeExpenseEomparesion',
+      //     },
 
-        ],},
+      //   ],},
       {
         component: CNavGroup,
         name: 'Stocks',

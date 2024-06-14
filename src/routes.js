@@ -42,10 +42,15 @@ const NewQuote = React.lazy(() => import('./views/sales/NewQuote'))
 const Payments = React.lazy(() => import('./views/sales/Payments'))
 const TaxRate = React.lazy(() => import('./views/sales/TaxRate'))
 
-//Srocks
+//Stocks
 const StockCategory = React.lazy(() => import('./views/stocks/StockCategory'))
 const ManageStock = React.lazy(() => import('./views/stocks/ManageStock'))
 const AssignStock = React.lazy(() => import('./views/stocks/AssignStock'))
+
+//tasks
+const RuningTask = React.lazy(() => import('./views/tasks/RuningTask'))
+const ArchiveTask = React.lazy(() => import('./views/tasks/ArchiveTask'))
+
 
 // Buttons
 const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'))
@@ -139,6 +144,10 @@ const routes = [
   { path: '/stocks/StockCategory', name: 'stocks', element: StockCategory },
   { path: '/stocks/ManageStock', name: 'stocks', element: ManageStock },
   { path: '/stocks/AssignStock', name: 'stocks', element:AssignStock },
+
+  //tasks
+  { path: '/tasks/RuningTask', name: 'tasks', element:RuningTask },
+  { path: '/tasks/ArchiveTask', name: 'tasks', element:ArchiveTask},
   
 ]
 

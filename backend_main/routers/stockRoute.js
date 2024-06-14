@@ -19,6 +19,8 @@ const{
     updateAssignment,
     deleteAssignment,
     getAllProducts,
+    AssignStock,
+    AllAssignedStocks,
 
 } = require('../controllers/stockController')
 
@@ -56,6 +58,10 @@ router.post('/createAssignment',createAssignment);
 router.put('/updateAssignment/:id',updateAssignment);
 router.delete('/deleteAssignment/:id',deleteAssignment);
 router.get('/getAllProducts' ,getAllProducts);
+router.post('/AssignStock' ,AssignStock);
+router.get('/AllAssignedStocks' ,AllAssignedStocks);
+
+
 
 
 module.exports = router
